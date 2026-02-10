@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hellas Aalborg - Pro Showroom</title>
+    <title>Hellas Aalborg - Pro Showroom v2.0</title>
     <style>
         html, body {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background-color: #0a0a0a;
+            overflow: hidden; background-color: #050505;
             touch-action: none; -webkit-user-select: none; user-select: none;
-            -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', sans-serif;
+            -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         canvas { display: block; width: 100% !important; height: 100% !important; cursor: crosshair; }
 
@@ -18,106 +18,116 @@
             pointer-events: none; z-index: 10;
         }
 
-        /* Joystick Custom Style */
+        /* Joystick Στυλ */
         #joystick-wrapper {
             position: absolute; bottom: 50px; left: 50px; width: 100px; height: 100px;
             background: rgba(255,255,255,0.1); border-radius: 50%; 
-            border: 2px solid rgba(255,255,255,0.3); display: none; pointer-events: auto;
-            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.2); display: none; pointer-events: auto;
+            backdrop-filter: blur(8px);
         }
         #joystick-knob {
             position: absolute; top: 50%; left: 50%; width: 45px; height: 45px;
             background: white; border-radius: 50%; transform: translate(-50%, -50%);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
         }
         @media (pointer: coarse) { #joystick-wrapper { display: block; } }
 
-        /* Interaction Cards */
+        /* Κάρτες Αλληλεπίδρασης */
         .card {
             position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center;
+            background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6); text-align: center;
             display: none; width: 300px; pointer-events: auto;
-            border-top: 6px solid #0056b3; backdrop-filter: blur(10px);
-            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-top: 8px solid #0056b3; backdrop-filter: blur(10px);
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes slideIn { from { opacity:0; bottom: 150px; } to { opacity:1; bottom: 180px; } }
+        @keyframes slideUp { from { opacity:0; transform: translate(-50%, 40px); } to { opacity:1; transform: translate(-50%, 0); } }
         
         .btn {
-            display: block; width: 100%; padding: 14px; margin-top: 10px;
-            border-radius: 15px; text-decoration: none; font-weight: bold;
+            display: block; width: 100%; padding: 15px; margin-top: 12px;
+            border-radius: 16px; text-decoration: none; font-weight: bold;
             color: white; text-align: center; font-size: 16px; transition: 0.2s;
+            border: none; cursor: pointer;
         }
-        .btn:active { transform: scale(0.96); }
-        .btn-blue { background: #0056b3; box-shadow: 0 4px 10px rgba(0,86,179,0.3); }
-        .btn-wolt { background: #00c2e8; box-shadow: 0 4px 10px rgba(0,194,232,0.3); }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn:active { transform: scale(0.95); }
+        .btn-blue { background: linear-gradient(135deg, #0056b3, #003d80); box-shadow: 0 6px 15px rgba(0,86,179,0.3); }
+        .btn-wolt { background: linear-gradient(135deg, #00c2e8, #008ba6); box-shadow: 0 6px 15px rgba(0,194,232,0.3); }
         
         #helper {
             position: absolute; bottom: 25px; width: 100%; text-align: center;
-            color: white; font-size: 14px; text-shadow: 1px 1px 3px black;
+            color: white; font-size: 14px; text-shadow: 0 2px 4px black;
             font-weight: 500; letter-spacing: 0.5px; opacity: 0.8;
         }
 
-        .close-hint { font-size: 11px; color: #999; margin-top: 15px; font-style: italic; }
+        .version-tag {
+            position: absolute; top: 10px; left: 10px; color: rgba(255,255,255,0.3);
+            font-size: 10px; font-weight: bold; letter-spacing: 1px;
+        }
     </style>
+    <!-- Βιβλιοθήκη Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
 </head>
 <body>
 
     <div id="ui-layer">
+        <div class="version-tag">v2.0 PRO ACTIVE</div>
         <div id="joystick-wrapper"><div id="joystick-knob"></div></div>
 
+        <!-- Κάρτα Μενού -->
         <div id="card-takeaway" class="card">
-            <h2 style="margin:0; color:#0056b3; font-size: 22px;">Menu & Takeaway</h2>
-            <p style="font-size:15px; color:#444; margin: 10px 0;">Experience authentic Greek taste.</p>
-            <a href="https://hellas-aalborg-app.base44.app/menu" target="_blank" class="btn btn-blue">VIEW OUR MENU</a>
-            <div class="close-hint">Walk away to close</div>
+            <h2 style="margin:0; color:#0056b3; font-size: 24px;">Menu & Takeaway</h2>
+            <p style="font-size:15px; color:#444; margin: 12px 0;">Αυθεντικές ελληνικές γεύσεις στο Aalborg.</p>
+            <a href="https://hellas-aalborg-app.base44.app/menu" target="_blank" class="btn btn-blue">ΔΕΙΤΕ ΤΟ ΜΕΝΟΥ</a>
+            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
         </div>
 
+        <!-- Κάρτα Wolt -->
         <div id="card-wolt" class="card">
-            <h2 style="margin:0; color:#00c2e8; font-size: 22px;">Wolt Delivery</h2>
-            <p style="font-size:15px; color:#444; margin: 10px 0;">Order hot gyros to your door.</p>
-            <a href="https://www.wolt.com/el/dnk/aalborg/restaurant/hellas-aalborg" target="_blank" class="btn btn-wolt">ORDER VIA WOLT</a>
-            <div class="close-hint">Walk away to close</div>
+            <h2 style="margin:0; color:#00c2e8; font-size: 24px;">Wolt Delivery</h2>
+            <p style="font-size:15px; color:#444; margin: 12px 0;">Παραγγείλτε τώρα μέσω Wolt.</p>
+            <a href="https://www.wolt.com/el/dnk/aalborg/restaurant/hellas-aalborg" target="_blank" class="btn btn-wolt">ΠΑΡΑΓΓΕΛΙΑ (WOLT)</a>
+            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
         </div>
 
+        <!-- Κάρτα Επικοινωνίας -->
         <div id="card-contact" class="card">
-            <h2 style="margin:0; color:#0056b3; font-size: 22px;">Contact Info</h2>
-            <p style="font-size:15px; color:#444; margin: 10px 0;">Ved Stranden 21, 9000 Aalborg</p>
-            <a href="tel:+4542177754" class="btn btn-blue">📞 CALL: +45 42 17 77 54</a>
-            <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #eee;">📍 OPEN MAPS</a>
-            <div class="close-hint">Walk away to close</div>
+            <h2 style="margin:0; color:#0056b3; font-size: 24px;">Contact Info</h2>
+            <p style="font-size:15px; color:#444; margin: 12px 0;">Ved Stranden 21, 9000 Aalborg</p>
+            <a href="tel:+4542177754" class="btn btn-blue">📞 ΚΛΗΣΗ: +45 42 17 77 54</a>
+            <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #f0f0f0;">📍 ΟΔΗΓΙΕΣ ΧΑΡΤΗ</a>
+            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
         </div>
 
-        <div id="helper">Explore or Click on objects to interact</div>
+        <div id="helper">Χρησιμοποίησε το Joystick ή WASD για να περιηγηθείς</div>
     </div>
 
     <script>
         // Καθολικές μεταβλητές
         let scene, camera, renderer, player, joystick, knob;
         let interactiveObjects = [];
-        let raycaster;
-        let mouse;
+        let raycaster, mouse;
+        let lLeg, rLeg;
 
-        // Συνάρτηση ασφαλούς εκκίνησης
+        // Ασφαλής εκκίνηση της εφαρμογής
         function startApp() {
             if (typeof THREE !== 'undefined') {
+                console.log("Three.js loaded successfully. Initializing...");
                 init();
             } else {
-                // Αναμονή μέχρι να φορτώσει η βιβλιοθήκη Three.js
                 setTimeout(startApp, 100);
             }
         }
         window.onload = startApp;
 
         function init() {
-            // Αρχικοποίηση Raycaster και Mouse Vector μετά το φόρτωμα της βιβλιοθήκης
+            // Αρχικοποίηση βασικών εργαλείων
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x111111);
-            scene.fog = new THREE.Fog(0x111111, 20, 60);
+            scene.background = new THREE.Color(0x0a0a0a);
+            scene.fog = new THREE.Fog(0x0a0a0a, 20, 65);
 
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -128,234 +138,228 @@
             document.body.appendChild(renderer.domElement);
 
             // Φωτισμός
-            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
             
             const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-            sun.position.set(10, 20, 10);
+            sun.position.set(10, 25, 10);
             sun.castShadow = true;
-            sun.shadow.mapSize.width = 1024;
+            sun.shadow.mapSize.set(1024, 1024);
             scene.add(sun);
 
-            // Φωτιστικό σποτ πάνω από τον πάγκο
-            const spot = new THREE.PointLight(0xffffff, 1, 15);
-            spot.position.set(0, 5, -10);
+            // Spotlight πάνω από τον πάγκο
+            const spot = new THREE.PointLight(0xffffff, 1.5, 20);
+            spot.position.set(0, 6, -12);
             scene.add(spot);
 
-            // --- ΚΟΣΜΟΣ ---
-            const roomSize = 40;
+            // --- ΠΕΡΙΒΑΛΛΟΝ ---
+            const roomSize = 45;
             
-            // Μαρμάρινο Δάπεδο
+            // Μαρμάρινο Δάπεδο με υψηλή γυαλάδα
             const mCanvas = document.createElement('canvas');
             mCanvas.width = 512; mCanvas.height = 512;
             const mCtx = mCanvas.getContext('2d');
             mCtx.fillStyle = '#ffffff'; mCtx.fillRect(0,0,512,512);
-            mCtx.strokeStyle = '#e5e5e5';
-            for(let i=0; i<60; i++) {
+            mCtx.strokeStyle = '#eeeeee';
+            for(let i=0; i<80; i++) {
                 mCtx.beginPath();
                 mCtx.moveTo(Math.random()*512, Math.random()*512);
                 mCtx.bezierCurveTo(Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512);
                 mCtx.stroke();
             }
+            const floorTex = new THREE.CanvasTexture(mCanvas);
+            floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
+            floorTex.repeat.set(4, 4);
+
             const floor = new THREE.Mesh(
                 new THREE.PlaneGeometry(roomSize, roomSize),
-                new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(mCanvas), roughness: 0.05, metalness: 0.1 })
+                new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.03, metalness: 0.1 })
             );
             floor.rotation.x = -Math.PI/2;
             floor.receiveShadow = true;
             scene.add(floor);
 
             // Τοίχοι
-            const wallH = 14;
-            const whiteMat = new THREE.MeshStandardMaterial({ color: 0xfafafa });
-            const blueMat = new THREE.MeshStandardMaterial({ color: 0x0056b3 });
+            const wallH = 15;
+            const whiteWall = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const blueWall = new THREE.MeshStandardMaterial({ color: 0x0056b3 });
 
-            const createWall = (w, h, d, x, y, z, mat) => {
-                const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-                mesh.position.set(x, y, z);
-                scene.add(mesh);
+            const addWall = (w, h, d, x, y, z, mat) => {
+                const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+                m.position.set(x, y, z);
+                scene.add(m);
             };
 
-            createWall(roomSize, wallH, 0.5, 0, wallH/2, -roomSize/2, whiteMat); // Πίσω
-            createWall(roomSize, wallH, 0.5, 0, wallH/2, roomSize/2, whiteMat);  // Μπροστά
-            createWall(0.5, wallH, roomSize, -roomSize/2, wallH/2, 0, blueMat);  // Αριστερά
-            createWall(0.5, wallH, roomSize, roomSize/2, wallH/2, 0, blueMat);   // Δεξιά
+            addWall(roomSize, wallH, 0.6, 0, wallH/2, -roomSize/2, whiteWall); // Πίσω
+            addWall(roomSize, wallH, 0.6, 0, wallH/2, roomSize/2, whiteWall);  // Εμπρός
+            addWall(0.6, wallH, roomSize, -roomSize/2, wallH/2, 0, blueWall);  // Αριστερά
+            addWall(0.6, wallH, roomSize, roomSize/2, wallH/2, 0, blueWall);   // Δεξιά
 
             // --- ΔΙΑΚΟΣΜΗΣΗ ---
-            // Σημαίες
-            function drawFlag(type) {
+            function getFlag(gr) {
                 const c = document.createElement('canvas'); c.width = 256; c.height = 160;
                 const tx = c.getContext('2d');
-                if(type === 'GR') {
+                if(gr) {
                     tx.fillStyle = '#0056b3'; tx.fillRect(0,0,256,160);
                     tx.fillStyle = '#fff'; for(let i=1;i<9;i+=2) tx.fillRect(0, i*17.7, 256, 17.7);
                     tx.fillStyle = '#0056b3'; tx.fillRect(0,0,100,88);
                     tx.fillStyle = '#fff'; tx.fillRect(40,0,20,88); tx.fillRect(0,34,100,20);
                 } else {
                     tx.fillStyle = '#c8102e'; tx.fillRect(0,0,256,160);
-                    tx.fillStyle = '#fff'; tx.fillRect(70,0,25,160); tx.fillRect(0,67.5,256,25);
+                    tx.fillStyle = '#fff'; tx.fillRect(75,0,25,160); tx.fillRect(0,68,256,25);
                 }
                 return new THREE.CanvasTexture(c);
             }
 
-            const flagG = new THREE.PlaneGeometry(5, 3);
-            const grFlag = new THREE.Mesh(flagG, new THREE.MeshStandardMaterial({ map: drawFlag('GR') }));
-            grFlag.position.set(10, 7, -19.7); scene.add(grFlag);
+            const flagMesh = new THREE.Mesh(new THREE.PlaneGeometry(6, 3.5), new THREE.MeshStandardMaterial({ roughness: 0.8 }));
+            const grFlag = flagMesh.clone(); grFlag.material = new THREE.MeshStandardMaterial({ map: getFlag(true) });
+            grFlag.position.set(12, 8, -roomSize/2 + 0.4); scene.add(grFlag);
 
-            const dkFlag = new THREE.Mesh(flagG, new THREE.MeshStandardMaterial({ map: drawFlag('DK') }));
-            dkFlag.position.set(-10, 7, -19.7); scene.add(dkFlag);
+            const dkFlag = flagMesh.clone(); dkFlag.material = new THREE.MeshStandardMaterial({ map: getFlag(false) });
+            dkFlag.position.set(-12, 8, -roomSize/2 + 0.4); scene.add(dkFlag);
 
-            // Λογότυπο
+            // Λογότυπο (Αναζήτηση για logo.jpg)
             const loader = new THREE.TextureLoader();
             loader.load('logo.jpg', (tex) => {
-                const logo = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshStandardMaterial({ map: tex, transparent: true }));
-                logo.position.set(0, 6.5, -19.6); scene.add(logo);
+                const logo = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshStandardMaterial({ map: tex, transparent: true }));
+                logo.position.set(0, 7, -roomSize/2 + 0.5);
+                scene.add(logo);
             }, undefined, () => {
                 const canv = document.createElement('canvas'); canv.width = 512; canv.height = 512;
                 const ctx = canv.getContext('2d');
-                ctx.strokeStyle = '#0056b3'; ctx.lineWidth = 20; ctx.beginPath(); ctx.arc(256, 256, 220, 0, Math.PI*2); ctx.stroke();
-                ctx.fillStyle = '#0056b3'; ctx.textAlign = 'center'; ctx.font = 'bold 70px Arial';
-                ctx.fillText('HELLAS', 256, 220); ctx.fillText('AALBORG', 256, 310);
-                const fb = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(canv), transparent: true }));
-                fb.position.set(0, 6.5, -19.6); scene.add(fb);
+                ctx.strokeStyle = '#0056b3'; ctx.lineWidth = 25; ctx.beginPath(); ctx.arc(256, 256, 220, 0, Math.PI*2); ctx.stroke();
+                ctx.fillStyle = '#0056b3'; ctx.textAlign = 'center'; ctx.font = 'bold 80px Arial';
+                ctx.fillText('HELLAS', 256, 220); ctx.fillText('AALBORG', 256, 315);
+                const fb = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(canv), transparent: true }));
+                fb.position.set(0, 7, -roomSize/2 + 0.5); scene.add(fb);
             });
 
-            // --- ΕΠΙΠΛΑ ΚΑΙ ΔΙΑΔΡΑΣΤΙΚΑ ΑΝΤΙΚΕΙΜΕΝΑ ---
-            const counter = new THREE.Mesh(new THREE.BoxGeometry(14, 1.3, 3), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 }));
-            counter.position.set(0, 0.65, -12); counter.receiveShadow = true; counter.castShadow = true;
+            // --- ΠΑΓΚΟΣ ΚΑΙ ΑΝΤΙΚΕΙΜΕΝΑ ---
+            const counter = new THREE.Mesh(new THREE.BoxGeometry(16, 1.4, 3.5), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.05 }));
+            counter.position.set(0, 0.7, -13); counter.receiveShadow = true; counter.castShadow = true;
             scene.add(counter);
 
-            // Διαδραστικό 1: Κατάλογος
+            // Laptop
+            const laptop = new THREE.Group();
+            laptop.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.06, 0.8), new THREE.MeshStandardMaterial({ color: 0x222222 })));
+            const screen = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.05), new THREE.MeshStandardMaterial({ color: 0x00c2e8, emissive: 0x00c2e8, emissiveIntensity: 0.3 }));
+            screen.position.set(0, 0.4, -0.4); screen.rotation.x = -Math.PI/6; laptop.add(screen);
+            laptop.position.set(-5.5, 1.45, -13); laptop.name = "laptop";
+            scene.add(laptop); interactiveObjects.push(laptop);
+
+            // Catalog
             const catalog = new THREE.Group();
-            catalog.add(new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.8, 0.1), new THREE.MeshStandardMaterial({ color: 0x0056b3 })));
-            catalog.add(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.75, 0.12), new THREE.MeshStandardMaterial({ color: 0xffffff })));
-            catalog.position.set(0, 1.6, -12); catalog.name = "catalog";
+            catalog.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.9, 0.1), new THREE.MeshStandardMaterial({ color: 0x0056b3 })));
+            catalog.add(new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.85, 0.12), new THREE.MeshStandardMaterial({ color: 0xffffff })));
+            catalog.position.set(0, 1.8, -13); catalog.name = "catalog";
             scene.add(catalog); interactiveObjects.push(catalog);
 
-            // Διαδραστικό 2: Τηλέφωνο
-            const phone = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.08, 0.6), new THREE.MeshStandardMaterial({ color: 0x111111 }));
-            phone.position.set(5, 1.35, -12); phone.name = "phone";
+            // Phone
+            const phone = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.7), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            phone.position.set(5.5, 1.45, -13); phone.name = "phone";
             scene.add(phone); interactiveObjects.push(phone);
-
-            // Διαδραστικό 3: Laptop
-            const laptop = new THREE.Group();
-            laptop.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.06, 0.8), new THREE.MeshStandardMaterial({ color: 0x333333 })));
-            const screen = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.05), new THREE.MeshStandardMaterial({ color: 0x00c2e8, emissive: 0x00c2e8, emissiveIntensity: 0.2 }));
-            screen.position.set(0, 0.4, -0.4); screen.rotation.x = -Math.PI/6; laptop.add(screen);
-            laptop.position.set(-5, 1.35, -12); laptop.name = "laptop";
-            scene.add(laptop); interactiveObjects.push(laptop);
 
             // --- ΧΑΡΑΚΤΗΡΑΣ ---
             player = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.28, 0.75, 4, 12), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-            torso.position.y = 1.15; player.add(torso);
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffdbac }));
-            head.position.y = 1.8; player.add(head);
-            const legG = new THREE.CapsuleGeometry(0.1, 0.6, 4, 8);
-            const lLeg = new THREE.Mesh(legG, new THREE.MeshStandardMaterial({ color: 0x222222 })); lLeg.position.set(-0.16, 0.4, 0); player.add(lLeg);
-            const rLeg = lLeg.clone(); rLeg.position.x = 0.16; player.add(rLeg);
+            const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 12), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+            torso.position.y = 1.2; player.add(torso);
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffdbac }));
+            head.position.y = 1.9; player.add(head);
+            const legG = new THREE.CapsuleGeometry(0.12, 0.65, 4, 8);
+            const legMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+            lLeg = new THREE.Mesh(legG, legMat); lLeg.position.set(-0.18, 0.45, 0); player.add(lLeg);
+            rLeg = lLeg.clone(); rLeg.position.x = 0.18; player.add(rLeg);
             
-            player.position.set(0, 0, 8); player.castShadow = true;
+            player.position.set(0, 0, 10); player.castShadow = true;
             scene.add(player);
 
-            // --- ΧΕΙΡΙΣΜΟΙ ---
+            // --- ΧΕΙΡΙΣΜΟΣ ---
             joystick = document.getElementById('joystick-wrapper');
             knob = document.getElementById('joystick-knob');
-            let moveDir = { x: 0, z: 0 }, activeJoy = false;
+            let moveDir = { x: 0, z: 0 }, isJoyActive = false;
             let keys = {};
 
             window.addEventListener('keydown', e => keys[e.code] = true);
             window.addEventListener('keyup', e => keys[e.code] = false);
 
-            const handleJoy = (e) => {
-                if(!activeJoy) return;
+            const handleJoyMove = (e) => {
+                if(!isJoyActive) return;
                 const t = e.touches ? e.touches[0] : e;
-                const r = joystick.getBoundingClientRect(), dx = t.clientX - (r.left + 50), dy = t.clientY - (r.top + 50);
-                const d = Math.min(Math.sqrt(dx*dx+dy*dy), 40), a = Math.atan2(dy, dx);
-                knob.style.left = `calc(50% + ${Math.cos(a)*d}px)`; knob.style.top = `calc(50% + ${Math.sin(a)*d}px)`;
-                moveDir = { x: Math.cos(a)*(d/40), z: Math.sin(a)*(d/40) };
+                const rect = joystick.getBoundingClientRect(), dx = t.clientX - (rect.left + 50), dy = t.clientY - (rect.top + 50);
+                const dist = Math.min(Math.sqrt(dx*dx+dy*dy), 40), ang = Math.atan2(dy, dx);
+                knob.style.left = `calc(50% + ${Math.cos(ang)*dist}px)`; knob.style.top = `calc(50% + ${Math.sin(ang)*dist}px)`;
+                moveDir = { x: Math.cos(ang)*(dist/40), z: Math.sin(ang)*(dist/40) };
             };
 
-            joystick.addEventListener('pointerdown', e => { activeJoy = true; handleJoy(e); joystick.setPointerCapture(e.pointerId); });
-            window.addEventListener('pointermove', handleJoy);
-            window.addEventListener('pointerup', () => { activeJoy = false; moveDir = {x:0, z:0}; knob.style.left='50%'; knob.style.top='50%'; });
+            joystick.addEventListener('pointerdown', e => { isJoyActive = true; handleJoyMove(e); joystick.setPointerCapture(e.pointerId); });
+            window.addEventListener('pointermove', handleJoyMove);
+            window.addEventListener('pointerup', () => { isJoyActive = false; moveDir = {x:0, z:0}; knob.style.left='50%'; knob.style.top='50%'; });
 
-            // Raycasting για Κλικ/Αφή
-            window.addEventListener('mousedown', onDocumentMouseDown);
-            window.addEventListener('touchstart', (e) => {
-                mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-                checkInteractions();
-            });
-
-            function onDocumentMouseDown(event) {
-                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                checkInteractions();
-            }
-
-            function checkInteractions() {
+            // Raycasting για Κλικ
+            const checkClick = (e) => {
+                const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+                const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+                mouse.x = (clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(clientY / window.innerHeight) * 2 + 1;
                 raycaster.setFromCamera(mouse, camera);
                 const intersects = raycaster.intersectObjects(interactiveObjects, true);
                 if (intersects.length > 0) {
                     let obj = intersects[0].object;
                     while(obj.parent && !obj.name) obj = obj.parent;
-                    if(obj.name === 'catalog') showCard('card-takeaway');
-                    if(obj.name === 'phone') showCard('card-contact');
-                    if(obj.name === 'laptop') showCard('card-wolt');
+                    if(obj.name === 'catalog') openCard('card-takeaway');
+                    if(obj.name === 'phone') openCard('card-contact');
+                    if(obj.name === 'laptop') openCard('card-wolt');
                 }
-            }
+            };
+            window.addEventListener('mousedown', checkClick);
+            window.addEventListener('touchstart', checkClick);
 
-            function showCard(id) {
+            function openCard(id) {
                 document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
                 document.getElementById(id).style.display = 'block';
             }
 
-            // --- ANIMATION ---
+            // --- ANIMATION LOOP ---
             function animate() {
                 requestAnimationFrame(animate);
-                let speed = 0.18, moving = false;
+                let spd = 0.2, isMoving = false;
 
-                let dx = moveDir.x * speed, dz = moveDir.z * speed;
-                if (keys['KeyW'] || keys['ArrowUp']) dz = -speed;
-                if (keys['KeyS'] || keys['ArrowDown']) dz = speed;
-                if (keys['KeyA'] || keys['ArrowLeft']) dx = -speed;
-                if (keys['KeyD'] || keys['ArrowRight']) dx = speed;
+                let dx = moveDir.x * spd, dz = moveDir.z * spd;
+                if (keys['KeyW'] || keys['ArrowUp']) dz = -spd;
+                if (keys['KeyS'] || keys['ArrowDown']) dz = spd;
+                if (keys['KeyA'] || keys['ArrowLeft']) dx = -spd;
+                if (keys['KeyD'] || keys['ArrowRight']) dx = spd;
 
                 if (Math.abs(dx) > 0.01 || Math.abs(dz) > 0.01) {
-                    // Collision με τον πάγκο
                     let nextX = player.position.x + dx, nextZ = player.position.z + dz;
-                    const inCounterArea = (nextX > -7.5 && nextX < 7.5 && nextZ > -14 && nextZ < -10);
-                    
-                    if(!inCounterArea) {
-                        player.position.x = Math.max(-18, Math.min(18, nextX));
-                        player.position.z = Math.max(-18, Math.min(18, nextZ));
+                    // Απλό Collision με τον πάγκο
+                    const nearCounter = (nextX > -8.5 && nextX < 8.5 && nextZ > -15.5 && nextZ < -11);
+                    if(!nearCounter) {
+                        player.position.x = Math.max(-20, Math.min(20, nextX));
+                        player.position.z = Math.max(-20, Math.min(20, nextZ));
                     }
                     player.rotation.y = Math.atan2(-dx, -dz);
-                    moving = true;
+                    isMoving = true;
                 }
 
-                if (moving) {
+                if (isMoving) {
                     const t = Date.now()*0.01;
                     lLeg.rotation.x = Math.sin(t)*0.6; rLeg.rotation.x = Math.sin(t+Math.PI)*0.6;
                 } else { lLeg.rotation.x = rLeg.rotation.x = 0; }
 
                 // Ομαλή Κάμερα
-                camera.position.lerp(new THREE.Vector3(player.position.x, 5.5, player.position.z + 9.5), 0.1);
+                camera.position.lerp(new THREE.Vector3(player.position.x, 6, player.position.z + 10), 0.1);
                 camera.lookAt(player.position.x, 1, player.position.z);
 
-                // Αυτόματο κλείσιμο καρτών αν απομακρυνθεί ο παίκτης
-                const dist = player.position.distanceTo(new THREE.Vector3(0,0,-12));
-                if(dist > 5) document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-                else if (!moving && dist < 4) {
-                    if(player.position.x > 3) showCard('card-contact');
-                    else if(player.position.x < -3) showCard('card-wolt');
-                    else showCard('card-takeaway');
+                // Αυτόματη απόκρυψη καρτών βάσει απόστασης
+                const distToCounter = player.position.distanceTo(new THREE.Vector3(0,0,-13));
+                if(distToCounter > 6) {
+                    document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
                 }
 
-                // Hover animations για τα αντικείμενα
+                // Animation αντικειμένων
                 interactiveObjects.forEach(obj => {
                     obj.rotation.y += 0.01;
-                    if(player.position.distanceTo(obj.position) < 4) obj.position.y += Math.sin(Date.now()*0.005)*0.002;
+                    if(distToCounter < 5) obj.position.y += Math.sin(Date.now()*0.005)*0.0015;
                 });
 
                 renderer.render(scene, camera);
