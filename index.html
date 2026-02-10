@@ -10,57 +10,53 @@
             margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; background-color: #1a1a1a;
             touch-action: none; -webkit-user-select: none; user-select: none;
-            -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        canvas { display: block; width: 100% !important; height: 100% !important; cursor: crosshair; }
+
+        canvas { display: block; width: 100% !important; height: 100% !important; }
 
         #ui-layer { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             pointer-events: none; z-index: 10;
         }
 
-        /* Joystick Στυλ */
+        /* Joystick - Εμφανίζεται αυτόματα σε κινητά */
         #joystick-wrapper {
             position: absolute; bottom: 50px; left: 50px; width: 100px; height: 100px;
-            background: rgba(255,255,255,0.1); border-radius: 50%; 
-            border: 2px solid rgba(255,255,255,0.2); display: none; pointer-events: auto;
-            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.2); border-radius: 50%; 
+            border: 2px solid rgba(255,255,255,0.5); display: none; pointer-events: auto;
         }
         #joystick-knob {
-            position: absolute; top: 50%; left: 50%; width: 45px; height: 45px;
+            position: absolute; top: 50%; left: 50%; width: 42px; height: 42px;
             background: white; border-radius: 50%; transform: translate(-50%, -50%);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
         }
         @media (pointer: coarse) { #joystick-wrapper { display: block; } }
 
-        /* Κάρτες Αλληλεπίδρασης */
+        /* Κάρτες Πληροφοριών */
         .card {
             position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6); text-align: center;
-            display: none; width: 300px; pointer-events: auto;
-            border-top: 8px solid #0056b3; backdrop-filter: blur(10px);
-            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white; padding: 22px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center;
+            display: none; width: 280px; pointer-events: auto;
+            border-bottom: 5px solid #0056b3;
         }
-        @keyframes slideUp { from { opacity:0; transform: translate(-50%, 40px); } to { opacity:1; transform: translate(-50%, 0); } }
         
         .btn {
-            display: block; width: 100%; padding: 15px; margin-top: 12px;
-            border-radius: 16px; text-decoration: none; font-weight: bold;
-            color: white; text-align: center; font-size: 16px; transition: 0.2s;
-            border: none; cursor: pointer;
+            display: block; width: 100%; padding: 12px; margin-top: 10px;
+            border-radius: 12px; text-decoration: none; font-weight: bold;
+            color: white; text-align: center; font-size: 15px;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-blue { background: linear-gradient(135deg, #0056b3, #003d80); }
-        .btn-wolt { background: linear-gradient(135deg, #00c2e8, #008ba6); }
+        .btn-blue { background: #0056b3; }
+        .btn-wolt { background: #00c2e8; }
         
         #helper {
-            position: absolute; bottom: 25px; width: 100%; text-align: center;
-            color: white; font-size: 14px; text-shadow: 0 2px 4px black;
-            font-weight: 500; letter-spacing: 0.5px; opacity: 0.8;
+            position: absolute; bottom: 20px; width: 100%; text-align: center;
+            color: white; font-size: 13px; text-shadow: 1px 1px 2px black;
+            font-weight: 500; opacity: 0.9;
         }
     </style>
-    <!-- Βιβλιοθήκη Three.js - Σταθερή έκδοση για μέγιστη συμβατότητα -->
+    <!-- Χρήση σταθερής έκδοσης για αποφυγή σφαλμάτων στο iPhone -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
@@ -68,41 +64,33 @@
     <div id="ui-layer">
         <div id="joystick-wrapper"><div id="joystick-knob"></div></div>
 
-        <!-- Κάρτα Μενού -->
         <div id="card-takeaway" class="card">
-            <h2 style="margin:0; color:#0056b3; font-size: 24px;">Menu & Takeaway</h2>
-            <p style="font-size:15px; color:#444; margin: 12px 0;">Αυθεντικές ελληνικές γεύσεις στο Aalborg.</p>
+            <h3 style="margin:0; color:#0056b3;">Menu & Takeaway</h3>
+            <p style="font-size:14px; color:#666;">Παραγγείλτε απευθείας από την εφαρμογή μας.</p>
             <a href="https://hellas-aalborg-app.base44.app/menu" target="_blank" class="btn btn-blue">ΔΕΙΤΕ ΤΟ ΜΕΝΟΥ</a>
-            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
         </div>
 
-        <!-- Κάρτα Wolt -->
         <div id="card-wolt" class="card">
-            <h2 style="margin:0; color:#00c2e8; font-size: 24px;">Wolt Delivery</h2>
-            <p style="font-size:15px; color:#444; margin: 12px 0;">Παραγγείλτε τώρα μέσω Wolt.</p>
-            <a href="https://www.wolt.com/el/dnk/aalborg/restaurant/hellas-aalborg" target="_blank" class="btn btn-wolt">ΠΑΡΑΓΓΕΛΙΑ (WOLT)</a>
-            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
+            <h3 style="margin:0; color:#00c2e8;">Wolt Delivery</h3>
+            <p style="font-size:14px; color:#666;">Γρήγορη παράδοση στο χώρο σας.</p>
+            <a href="https://www.wolt.com/el/dnk/aalborg/restaurant/hellas-aalborg" target="_blank" class="btn btn-wolt">ΠΑΡΑΓΓΕΛΙΑ ΜΕΣΩ WOLT</a>
         </div>
 
-        <!-- Κάρτα Επικοινωνίας -->
         <div id="card-contact" class="card">
-            <h2 style="margin:0; color:#0056b3; font-size: 24px;">Contact Info</h2>
-            <p style="font-size:15px; color:#444; margin: 12px 0;">Ved Stranden 21, 9000 Aalborg</p>
-            <a href="tel:+4542177754" class="btn btn-blue">📞 ΚΛΗΣΗ: +45 42 17 77 54</a>
-            <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #f0f0f0;">📍 ΟΔΗΓΙΕΣ ΧΑΡΤΗ</a>
-            <p style="font-size: 11px; color: #999; margin-top: 15px;">Απομακρυνθείτε για να κλείσει</p>
+            <h3 style="margin:0; color:#0056b3;">Contact Us</h3>
+            <p style="font-size:14px; color:#666;">Ved Stranden 21, Aalborg</p>
+            <a href="tel:+4542177754" class="btn btn-blue">📞 +45 42 17 77 54</a>
+            <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #f0f0f0;">📍 Άνοιγμα Χάρτη</a>
         </div>
 
-        <div id="helper">Χρησιμοποίησε το Joystick ή WASD για να περιηγηθείς</div>
+        <div id="helper">Χρησιμοποιήστε το Joystick ή WASD για να περπατήσετε</div>
     </div>
 
     <script>
         let scene, camera, renderer, player, joystick, knob;
-        let interactiveObjects = [];
-        let raycaster, mouse;
-        let lLeg, rLeg;
+        let lLeg, rLeg, catalog, laptop, phone;
 
-        // Ασφαλής εκκίνηση
+        // Ασφαλής εκκίνηση για όλους τους browsers
         function startApp() {
             if (typeof THREE !== 'undefined') {
                 init();
@@ -113,12 +101,8 @@
         window.onload = startApp;
 
         function init() {
-            // Αρχικοποίηση εργαλείων
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x111111);
+            scene.background = new THREE.Color(0x1a1a1a);
             
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -128,19 +112,16 @@
             document.body.appendChild(renderer.domElement);
 
             // Φωτισμός
-            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-            const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-            sun.position.set(10, 25, 10);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+            sun.position.set(5, 12, 8);
             sun.castShadow = true;
             scene.add(sun);
 
-            const spot = new THREE.PointLight(0xffffff, 1, 20);
-            spot.position.set(0, 6, -12);
-            scene.add(spot);
-
             // --- ΠΕΡΙΒΑΛΛΟΝ ---
             const roomSize = 40;
-            const floorGeo = new THREE.PlaneGeometry(roomSize, roomSize);
+            
+            // Μαρμάρινο Πάτωμα
             const marbleCanvas = document.createElement('canvas');
             marbleCanvas.width = 512; marbleCanvas.height = 512;
             const mCtx = marbleCanvas.getContext('2d');
@@ -152,28 +133,31 @@
                 mCtx.bezierCurveTo(Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512, Math.random()*512);
                 mCtx.stroke();
             }
-            const floor = new THREE.Mesh(floorGeo, new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(marbleCanvas), roughness: 0.1 }));
+            const floor = new THREE.Mesh(
+                new THREE.PlaneGeometry(roomSize, roomSize),
+                new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(marbleCanvas), roughness: 0.1 })
+            );
             floor.rotation.x = -Math.PI/2;
             floor.receiveShadow = true;
             scene.add(floor);
 
-            // Τοίχοι
-            const wallH = 15;
-            const whiteWall = new THREE.MeshStandardMaterial({ color: 0xffffff });
-            const blueWall = new THREE.MeshStandardMaterial({ color: 0x0056b3 });
+            // Τοίχοι (Μπλε πλαϊνοί, Λευκοί πίσω/μπροστά)
+            const wallH = 12;
+            const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const blueMat = new THREE.MeshStandardMaterial({ color: 0x0056b3 });
 
-            const addW = (w, h, d, x, y, z, mat) => {
-                const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-                m.position.set(x, y, z);
-                scene.add(m);
+            const addWall = (w, h, d, x, y, z, mat) => {
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+                mesh.position.set(x, y, z);
+                scene.add(mesh);
             };
-            addW(roomSize, wallH, 0.5, 0, wallH/2, -roomSize/2, whiteWall);
-            addW(roomSize, wallH, 0.5, 0, wallH/2, roomSize/2, whiteWall);
-            addW(0.5, wallH, roomSize, -roomSize/2, wallH/2, 0, blueWall);
-            addW(0.5, wallH, roomSize, roomSize/2, wallH/2, 0, blueWall);
+            addWall(roomSize, wallH, 0.5, 0, wallH/2, -roomSize/2, whiteMat); // Πίσω
+            addWall(roomSize, wallH, 0.5, 0, wallH/2, roomSize/2, whiteMat);  // Μπροστά
+            addWall(0.5, wallH, roomSize, -roomSize/2, wallH/2, 0, blueMat);  // Αριστερά
+            addWall(0.5, wallH, roomSize, roomSize/2, wallH/2, 0, blueMat);   // Δεξιά
 
-            // Σημαίες
-            function createFlagTex(gr) {
+            // Σημαίες στον πίσω τοίχο
+            function createFlag(gr) {
                 const c = document.createElement('canvas'); c.width = 256; c.height = 160;
                 const tx = c.getContext('2d');
                 if(gr) {
@@ -187,11 +171,11 @@
                 }
                 return new THREE.CanvasTexture(c);
             }
-            const flagGeo = new THREE.PlaneGeometry(6, 3.5);
-            const grFlag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: createFlagTex(true) }));
-            grFlag.position.set(12, 8, -roomSize/2 + 0.3); scene.add(grFlag);
-            const dkFlag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: createFlagTex(false) }));
-            dkFlag.position.set(-12, 8, -roomSize/2 + 0.3); scene.add(dkFlag);
+            const flagG = new THREE.PlaneGeometry(6, 3.5);
+            const greekF = new THREE.Mesh(flagG, new THREE.MeshStandardMaterial({ map: createFlag(true) }));
+            greekF.position.set(12, 8, -roomSize/2 + 0.3); scene.add(greekF);
+            const danishF = new THREE.Mesh(flagG, new THREE.MeshStandardMaterial({ map: createFlag(false) }));
+            danishF.position.set(-12, 8, -roomSize/2 + 0.3); scene.add(danishF);
 
             // Λογότυπο
             const loader = new THREE.TextureLoader();
@@ -200,87 +184,59 @@
                 logo.position.set(0, 7, -roomSize/2 + 0.4); scene.add(logo);
             }, undefined, () => {
                 const canv = document.createElement('canvas'); canv.width = 512; canv.height = 512;
-                const tx = canv.getContext('2d');
-                tx.strokeStyle = '#0056b3'; tx.lineWidth = 25; tx.beginPath(); tx.arc(256, 256, 220, 0, Math.PI*2); tx.stroke();
-                tx.fillStyle = '#0056b3'; tx.textAlign = 'center'; tx.font = 'bold 80px Arial';
-                tx.fillText('HELLAS', 256, 220); tx.fillText('AALBORG', 256, 315);
+                const ctx = canv.getContext('2d');
+                ctx.strokeStyle = '#0056b3'; ctx.lineWidth = 20; ctx.beginPath(); ctx.arc(256, 256, 220, 0, Math.PI*2); ctx.stroke();
+                ctx.fillStyle = '#0056b3'; ctx.textAlign = 'center'; ctx.font = 'bold 70px Arial';
+                ctx.fillText('HELLAS', 256, 220); ctx.fillText('AALBORG', 256, 310);
                 const fb = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(canv), transparent: true }));
                 fb.position.set(0, 7, -roomSize/2 + 0.4); scene.add(fb);
             });
 
-            // Πάγκος
+            // --- ΠΑΓΚΟΣ ΚΑΙ ΑΝΤΙΚΕΙΜΕΝΑ ---
             const counter = new THREE.Mesh(new THREE.BoxGeometry(16, 1.4, 3.5), new THREE.MeshStandardMaterial({ color: 0xffffff }));
             counter.position.set(0, 0.7, -13); counter.receiveShadow = true; scene.add(counter);
 
-            // Αντικείμενα
-            const laptop = new THREE.Group();
-            laptop.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.1, 0.8), new THREE.MeshStandardMaterial({ color: 0x333333 })));
-            laptop.position.set(-5.5, 1.45, -13); laptop.name = "laptop";
-            scene.add(laptop); interactiveObjects.push(laptop);
+            catalog = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 1.1), new THREE.MeshStandardMaterial({ color: 0x0056b3 }));
+            catalog.position.set(0, 1.45, -13); scene.add(catalog);
 
-            const catalog = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.1, 1), new THREE.MeshStandardMaterial({ color: 0x0056b3 }));
-            catalog.position.set(0, 1.45, -13); catalog.name = "catalog";
-            scene.add(catalog); interactiveObjects.push(catalog);
+            laptop = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.1, 0.8), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+            laptop.position.set(-5.5, 1.45, -13); scene.add(laptop);
 
-            const phone = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.1, 0.7), new THREE.MeshStandardMaterial({ color: 0x111111 }));
-            phone.position.set(5.5, 1.45, -13); phone.name = "phone";
-            scene.add(phone); interactiveObjects.push(phone);
+            phone = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.1, 0.7), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            phone.position.set(5.5, 1.45, -13); scene.add(phone);
 
-            // Χαρακτήρας
+            // --- ΧΑΡΑΚΤΗΡΑΣ ---
             player = new THREE.Group();
             const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.3), new THREE.MeshStandardMaterial({ color: 0xffffff }));
             torso.position.y = 1.2; player.add(torso);
             const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffdbac }));
-            head.position.y = 1.8; player.add(head);
-            const legGeo = new THREE.BoxGeometry(0.15, 0.7, 0.15);
-            lLeg = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: 0x222222 })); lLeg.position.set(-0.18, 0.4, 0); player.add(lLeg);
+            head.position.y = 1.85; player.add(head);
+            const legG = new THREE.BoxGeometry(0.16, 0.7, 0.16);
+            lLeg = new THREE.Mesh(legG, new THREE.MeshStandardMaterial({ color: 0x222222 })); lLeg.position.set(-0.18, 0.4, 0); player.add(lLeg);
             rLeg = lLeg.clone(); rLeg.position.x = 0.18; player.add(rLeg);
             player.position.set(0, 0, 10); player.castShadow = true;
             scene.add(player);
 
-            // Χειρισμός
+            // --- ΧΕΙΡΙΣΜΟΣ ---
             joystick = document.getElementById('joystick-wrapper');
             knob = document.getElementById('joystick-knob');
-            let moveDir = { x: 0, z: 0 }, activeJoy = false;
+            let moveDir = { x: 0, z: 0 }, isJoyActive = false;
             let keys = {};
 
             window.addEventListener('keydown', e => keys[e.code] = true);
             window.addEventListener('keyup', e => keys[e.code] = false);
 
-            const handleJoyMove = (e) => {
-                if(!activeJoy) return;
+            const handleJoy = (e) => {
+                if(!isJoyActive) return;
                 const t = e.touches ? e.touches[0] : e;
                 const rect = joystick.getBoundingClientRect(), dx = t.clientX - (rect.left + 50), dy = t.clientY - (rect.top + 50);
                 const d = Math.min(Math.sqrt(dx*dx+dy*dy), 40), a = Math.atan2(dy, dx);
                 knob.style.left = `calc(50% + ${Math.cos(a)*d}px)`; knob.style.top = `calc(50% + ${Math.sin(a)*d}px)`;
                 moveDir = { x: Math.cos(a)*(d/40), z: Math.sin(a)*(d/40) };
             };
-            joystick.addEventListener('touchstart', e => { activeJoy = true; handleJoyMove(e); }, {passive:false});
-            window.addEventListener('touchmove', e => { if(activeJoy) { e.preventDefault(); handleJoyMove(e); } }, {passive:false});
-            window.addEventListener('touchend', () => { activeJoy = false; moveDir = {x:0, z:0}; knob.style.left='50%'; knob.style.top='50%'; });
-
-            const checkClick = (e) => {
-                const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-                const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-                mouse.x = (clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(mouse, camera);
-                const hit = raycaster.intersectObjects(interactiveObjects, true);
-                if (hit.length > 0) {
-                    let obj = hit[0].object;
-                    while(obj.parent && !obj.name) obj = obj.parent;
-                    if(obj.name === 'catalog') showC('card-takeaway');
-                    if(obj.name === 'phone') showC('card-contact');
-                    if(obj.name === 'laptop') showC('card-wolt');
-                }
-            };
-            window.addEventListener('mousedown', checkClick);
-            window.addEventListener('touchstart', checkClick);
-
-            function showC(id) {
-                document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-                document.getElementById(id).style.display = 'block';
-            }
+            joystick.addEventListener('touchstart', e => { isJoyActive = true; handleJoy(e); }, {passive:false});
+            window.addEventListener('touchmove', e => { if(isJoyActive) { e.preventDefault(); handleJoy(e); } }, {passive:false});
+            window.addEventListener('touchend', () => { isJoyActive = false; moveDir = {x:0, z:0}; knob.style.left='50%'; knob.style.top='50%'; });
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -289,13 +245,13 @@
                 if (keys['KeyW'] || keys['ArrowUp']) dz = -speed;
                 if (keys['KeyS'] || keys['ArrowDown']) dz = speed;
                 if (keys['KeyA'] || keys['ArrowLeft']) dx = -speed;
-                if (keys['KeyD'] || keys['ArrowRight']) dx = speed;
+                if (keys['KeyD'] || keys['ArrowRight']) dx = spd = speed;
 
                 if (Math.abs(dx) > 0.01 || Math.abs(dz) > 0.01) {
-                    let nX = player.position.x + dx, nZ = player.position.z + dz;
+                    player.position.x += dx; player.position.z += dz;
                     const wallLim = roomSize/2 - 1.5;
-                    player.position.x = Math.max(-wallLim, Math.min(wallLim, nX));
-                    player.position.z = Math.max(-wallLim, Math.min(wallLim, nZ));
+                    player.position.x = Math.max(-wallLim, Math.min(wallLim, player.position.x));
+                    player.position.z = Math.max(-wallLim, Math.min(wallLim, player.position.z));
                     player.rotation.y = Math.atan2(-dx, -dz);
                     moving = true;
                 }
@@ -308,9 +264,11 @@
                 camera.position.lerp(new THREE.Vector3(player.position.x, 6, player.position.z + 10), 0.1);
                 camera.lookAt(player.position.x, 1, player.position.z);
 
-                if(player.position.distanceTo(new THREE.Vector3(0,0,-13)) > 7) {
-                    document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-                }
+                // Αυτόματη εμφάνιση καρτών βάσει εγγύτητας (Proximity)
+                document.getElementById('card-takeaway').style.display = player.position.distanceTo(catalog.position) < 3.5 ? 'block' : 'none';
+                document.getElementById('card-wolt').style.display = player.position.distanceTo(laptop.position) < 3.5 ? 'block' : 'none';
+                document.getElementById('card-contact').style.display = player.position.distanceTo(phone.position) < 3.5 ? 'block' : 'none';
+
                 renderer.render(scene, camera);
             }
             animate();
