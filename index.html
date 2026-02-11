@@ -78,7 +78,7 @@
         <div id="card-contact" class="card">
             <h3 style="margin:0; color:#0056b3;">Contact Us</h3>
             <p style="font-size:14px; color:#666;">Ved Stranden 21, Aalborg</p>
-            <a href="tel:+4542177754" class="btn btn-blue">📞 +45 42 17 77 54</a>
+            <a href="tel:+4542177754" class="btn btn-blue">📞 CALL: +45 42 17 77 54</a>
             <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #f0f0f0;">📍 Open Map</a>
         </div>
 
@@ -185,7 +185,7 @@
 
         // --- LOGO (HELLAS AALBORG) ---
         const loader = new THREE.TextureLoader();
-        loader.load('logo.png', (tex) => {
+        loader.load('logo.jpg', (tex) => {
             const logoMat = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
             const logo = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), logoMat);
             logo.position.set(0, 6, -roomSize/2 + 0.3); scene.add(logo);
@@ -209,40 +209,76 @@
             p.position.set(x, wallH/2, -roomSize/2 + 0.6); scene.add(p);
         }
 
-        // --- FURNITURE ---
-        const counter = new THREE.Mesh(new THREE.BoxGeometry(12, 1.2, 2.5), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-        counter.position.set(0, 0.6, -10); counter.receiveShadow = true; scene.add(counter);
+        // --- NEW STRUCTURES (KIOSK & LOGOS) ---
 
-        // Catalog (Menu)
-        const menuGroup = new THREE.Group();
-        menuGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.08), new THREE.MeshStandardMaterial({ color: 0x0056b3 })));
-        menuGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.68, 0.1), new THREE.MeshStandardMaterial({ color: 0xffffff })));
-        menuGroup.position.set(0, 1.5, -10); scene.add(menuGroup);
+        // 1. IMPROVED SELF ORDERING KIOSK (CENTER)
+        const kioskGroup = new THREE.Group();
+        // Kiosk Pedestal Base
+        const kBase = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.15, 1.4), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
+        kioskGroup.add(kBase);
+        
+        // Kiosk Main Column
+        const kStand = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.8, 0.5), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+        kStand.position.y = 1.4;
+        kioskGroup.add(kStand);
+        
+        // Kiosk Large Screen Body
+        const kScreen = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.5, 0.15), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+        kScreen.position.y = 3.6;
+        kioskGroup.add(kScreen);
+        
+        // White Screen Face
+        const kFace = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.3, 0.05), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.1 }));
+        kFace.position.set(0, 3.6, 0.08);
+        kioskGroup.add(kFace);
+        
+        // Label "MENU / TAKEAWAY" with larger text
+        const kLabelCan = document.createElement('canvas'); 
+        kLabelCan.width = 512; kLabelCan.height = 128;
+        const klctx = kLabelCan.getContext('2d');
+        klctx.fillStyle = '#0056b3'; 
+        klctx.roundRect(0, 0, 512, 128, 20); 
+        klctx.fill();
+        klctx.fillStyle = 'white'; 
+        klctx.font = 'bold 52px Arial'; // Larger font
+        klctx.textAlign = 'center'; 
+        klctx.fillText('MENU / TAKEAWAY', 256, 80);
+        const kLabel = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.6), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(kLabelCan), transparent: true }));
+        kLabel.position.set(0, 5.1, 0);
+        kioskGroup.add(kLabel);
+        
+        kioskGroup.position.set(0, 0, -10);
+        scene.add(kioskGroup);
 
-        // Phone
-        const phone = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.5), new THREE.MeshStandardMaterial({ color: 0x222222 }));
-        phone.position.set(4.5, 1.25, -10); scene.add(phone);
+        // 2. WOLT LOGO (LEFT) - Circular Disk
+        const woltLogoGroup = new THREE.Group();
+        const wDisk = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32), new THREE.MeshStandardMaterial({ color: 0x00c2e8 }));
+        wDisk.rotation.x = Math.PI / 2;
+        const wCan = document.createElement('canvas'); wCan.width = 256; wCan.height = 256;
+        const wctx = wCan.getContext('2d');
+        wctx.fillStyle = '#00c2e8'; wctx.fillRect(0,0,256,256);
+        wctx.fillStyle = 'white'; wctx.font = 'bold 60px Arial'; wctx.textAlign = 'center'; wctx.fillText('WOLT', 128, 150);
+        const wFace = new THREE.Mesh(new THREE.CircleGeometry(1.2, 32), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(wCan) }));
+        wFace.position.z = 0.06;
+        const wBack = wFace.clone(); wBack.position.z = -0.06; wBack.rotation.y = Math.PI;
+        woltLogoGroup.add(wDisk, wFace, wBack);
+        woltLogoGroup.position.set(-8, 2.5, -10);
+        scene.add(woltLogoGroup);
 
-        // Laptop
-        const laptop = new THREE.Group();
-        laptop.add(new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.05, 0.7), new THREE.MeshStandardMaterial({ color: 0x00c2e8 })));
-        const screen = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.7, 0.05), new THREE.MeshStandardMaterial({ color: 0x00c2e8 }));
-        screen.position.set(0, 0.35, -0.35); screen.rotation.x = -Math.PI/6; laptop.add(screen);
-        laptop.position.set(-4.5, 1.25, -10); scene.add(laptop);
-
-        // Labels
-        function createLabel(txt, col, pos) {
-            const can = document.createElement('canvas'); const ct = can.getContext('2d');
-            can.width = 256; can.height = 100;
-            ct.fillStyle = col; ct.roundRect(0, 0, 256, 100, 50); ct.fill();
-            ct.font = 'bold 38px Arial'; ct.fillStyle = 'white'; ct.textAlign = 'center'; ct.fillText(txt, 128, 65);
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(can) }));
-            sprite.scale.set(2.2, 0.8, 1); sprite.position.copy(pos);
-            scene.add(sprite);
-        }
-        createLabel('MENU', '#0056b3', new THREE.Vector3(0, 2.8, -10));
-        createLabel('WOLT', '#00c2e8', new THREE.Vector3(-4.5, 2.8, -10));
-        createLabel('INFO', '#0056b3', new THREE.Vector3(4.5, 2.8, -10));
+        // 3. INFO LOGO (RIGHT) - Circular Disk
+        const infoLogoGroup = new THREE.Group();
+        const iDisk = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32), new THREE.MeshStandardMaterial({ color: 0x0056b3 }));
+        iDisk.rotation.x = Math.PI / 2;
+        const iCan = document.createElement('canvas'); iCan.width = 256; iCan.height = 256;
+        const ictx = iCan.getContext('2d');
+        ictx.fillStyle = '#0056b3'; ictx.fillRect(0,0,256,256);
+        ictx.fillStyle = 'white'; ictx.font = 'bold 100px Arial'; ictx.textAlign = 'center'; ictx.fillText('i', 128, 170);
+        const iFace = new THREE.Mesh(new THREE.CircleGeometry(1.2, 32), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(iCan) }));
+        iFace.position.z = 0.06;
+        const iBack = iFace.clone(); iBack.position.z = -0.06; iBack.rotation.y = Math.PI;
+        infoLogoGroup.add(iDisk, iFace, iBack);
+        infoLogoGroup.position.set(8, 2.5, -10);
+        scene.add(infoLogoGroup);
 
         // --- CHARACTER ---
         const player = new THREE.Group();
@@ -257,13 +293,7 @@
         const lLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.8), new THREE.MeshStandardMaterial({color: 0x333333})); lLeg.position.set(-0.15, 0.4, 0); player.add(lLeg);
         const rLeg = lLeg.clone(); rLeg.position.x = 0.15; player.add(rLeg);
 
-        // Flag on shirt back
-        const fCan = document.createElement('canvas'); fCan.width = 128; fCan.height = 128; const fct = fCan.getContext('2d');
-        fct.fillStyle = '#0056b3'; fct.fillRect(0,0,64,128); fct.fillStyle = '#fff'; fct.fillRect(0, 30, 64, 10); fct.fillRect(27, 0, 10, 70); 
-        fct.fillStyle = '#c8102e'; fct.fillRect(64,0,64,128); fct.fillStyle = '#fff'; fct.fillRect(64, 55, 64, 15); fct.fillRect(90, 0, 15, 128);
-        const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(fCan) }));
-        flag.position.set(0, 1.1, -0.26); flag.rotation.y = Math.PI; player.add(flag);
-
+        // Flag removed from player back as requested
         player.position.set(0, 0, 8); player.castShadow = true; scene.add(player);
 
         // --- CONTROLS ---
@@ -302,6 +332,10 @@
             if (moving) { const t = Date.now()*0.01; lLeg.rotation.x = Math.sin(t)*0.6; rLeg.rotation.x = Math.sin(t+Math.PI)*0.6; }
             else { lLeg.rotation.x = rLeg.rotation.x = 0; }
 
+            // Slow rotation for logos
+            woltLogoGroup.rotation.y += 0.015;
+            infoLogoGroup.rotation.y += 0.015;
+
             const lim = roomSize/2 - 1.8;
             player.position.x = Math.max(-lim, Math.min(lim, player.position.x));
             player.position.z = Math.max(-lim, Math.min(lim, player.position.z));
@@ -309,11 +343,11 @@
             camera.position.lerp(new THREE.Vector3(player.position.x, 5.5, player.position.z + 9), 0.15);
             camera.lookAt(player.position.x, 1, player.position.z);
 
-            document.getElementById('card-takeaway').style.display = player.position.distanceTo(menuGroup.position) < 3.5 ? 'block' : 'none';
-            document.getElementById('card-wolt').style.display = player.position.distanceTo(laptop.position) < 3.5 ? 'block' : 'none';
-            document.getElementById('card-contact').style.display = player.position.distanceTo(phone.position) < 3.5 ? 'block' : 'none';
+            // Updated collision/proximity checks for cards
+            document.getElementById('card-takeaway').style.display = player.position.distanceTo(kioskGroup.position) < 4.0 ? 'block' : 'none';
+            document.getElementById('card-wolt').style.display = player.position.distanceTo(woltLogoGroup.position) < 3.5 ? 'block' : 'none';
+            document.getElementById('card-contact').style.display = player.position.distanceTo(infoLogoGroup.position) < 3.5 ? 'block' : 'none';
 
-            menuGroup.rotation.y += 0.01;
             renderer.render(scene, camera);
         }
         animate();
