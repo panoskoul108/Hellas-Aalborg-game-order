@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hellas Aalborg - Virtual Showroom</title>
     <style>
-        /* Βασικό στυλ για όλες τις συσκευές */
         html, body {
             margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; background-color: #1a1a1a;
@@ -54,71 +53,69 @@
             font-weight: 500; opacity: 0.9;
         }
 
-        /* Νέο στυλ για το Privacy Policy κάτω δεξιά */
         #privacy-link {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: rgba(255,255,255,0.6);
-            text-decoration: none;
-            font-size: 12px;
-            font-family: sans-serif;
-            pointer-events: auto;
-            z-index: 20;
-            background: rgba(0,0,0,0.3);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        #privacy-link:hover {
-            color: white;
-            background: rgba(0,0,0,0.5);
+            position: absolute; bottom: 20px; right: 20px;
+            color: rgba(255,255,255,0.6); text-decoration: none;
+            font-size: 12px; font-family: sans-serif;
+            pointer-events: auto; z-index: 20;
+            background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px;
         }
     </style>
     <script type="importmap">
-        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+        { 
+            "imports": { 
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            } 
+        }
     </script>
 </head>
 <body>
 
     <div id="ui-layer">
         <div id="joystick-wrapper"><div id="joystick-knob"></div></div>
-
         <div id="card-takeaway" class="card">
             <h3 style="margin:0; color:#0056b3;">Menu & Takeaway</h3>
             <p style="font-size:14px; color:#666;">Order directly from our app.</p>
             <a href="https://hellas-aalborg-app.base44.app/menu" target="_blank" class="btn btn-blue">VIEW MENU</a>
         </div>
-
         <div id="card-wolt" class="card">
             <h3 style="margin:0; color:#00c2e8;">Wolt Delivery</h3>
             <p style="font-size:14px; color:#666;">Fast delivery to your location.</p>
             <a href="https://www.wolt.com/el/dnk/aalborg/restaurant/hellas-aalborg" target="_blank" class="btn btn-wolt">ORDER VIA WOLT</a>
         </div>
-
         <div id="card-contact" class="card">
             <h3 style="margin:0; color:#0056b3;">Contact Us</h3>
             <p style="font-size:14px; color:#666;">Ved Stranden 21, Aalborg</p>
             <a href="tel:+4542177754" class="btn btn-blue">📞 CALL: +45 42 17 77 54</a>
             <a href="https://maps.app.goo.gl/AtAZA5hi73RTZhhg8" target="_blank" class="btn" style="color:#0056b3; background: #f0f0f0;">📍 Open Map</a>
         </div>
-
-        <div id="helper">Use Joystick or WASD keys to walk around</div>
-        
+        <div id="helper">Drag to Look • Joystick or WASD to Walk</div>
         <a href="privacy.html" id="privacy-link">Privacy Policy</a>
     </div>
 
     <script type="module">
         import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- ΡΥΘΜΙΣΗ ΣΚΗΝΗΣ ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x1a1a1a);
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
+
+        // --- OrbitControls για ελεύθερη κάμερα ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; 
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 5;
+        controls.maxDistance = 15;
+        controls.maxPolarAngle = Math.PI / 2.1; // Εμποδίζει την κάμερα να μπει κάτω από το πάτωμα
 
         scene.add(new THREE.AmbientLight(0xffffff, 0.9));
         const sun = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -126,10 +123,7 @@
         sun.castShadow = true;
         scene.add(sun);
 
-        // --- ΠΕΡΙΒΑΛΛΟΝ ---
         const roomSize = 40;
-        
-        // Μαρμάρινο Πάτωμα
         const marbleCanvas = document.createElement('canvas');
         marbleCanvas.width = 512; marbleCanvas.height = 512;
         const mCtx = marbleCanvas.getContext('2d');
@@ -149,196 +143,54 @@
         floor.receiveShadow = true;
         scene.add(floor);
 
-        // Τοίχοι
         const wallH = 12;
         const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const blueMat = new THREE.MeshStandardMaterial({ color: 0x0056b3 });
-
         const backWall = new THREE.Mesh(new THREE.BoxGeometry(roomSize, wallH, 0.5), whiteMat);
         backWall.position.set(0, wallH/2, -roomSize/2); scene.add(backWall);
-
         const frontWall = new THREE.Mesh(new THREE.BoxGeometry(roomSize, wallH, 0.5), whiteMat);
         frontWall.position.set(0, wallH/2, roomSize/2); scene.add(frontWall);
-
         const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.5, wallH, roomSize), blueMat);
         leftWall.position.set(-roomSize/2, wallH/2, 0); scene.add(leftWall);
-
         const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.5, wallH, roomSize), blueMat);
         rightWall.position.set(roomSize/2, wallH/2, 0); scene.add(rightWall);
 
-        // --- ΣΗΜΑΙΕΣ ΣΤΟΝ ΤΟΙΧΟ ---
-        function createGreekFlagTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 270; canvas.height = 180;
-            const ctx = canvas.getContext('2d');
-            const stripeH = 180 / 9;
-            ctx.fillStyle = '#0056b3';
-            ctx.fillRect(0, 0, 270, 180);
-            ctx.fillStyle = '#ffffff';
-            for (let i = 1; i < 9; i += 2) ctx.fillRect(0, i * stripeH, 270, stripeH);
-            ctx.fillStyle = '#0056b3';
-            ctx.fillRect(0, 0, 100, 100);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(40, 0, 20, 100);
-            ctx.fillRect(0, 40, 100, 20);
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        function createDanishFlagTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 270; canvas.height = 180;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#c8102e';
-            ctx.fillRect(0, 0, 270, 180);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(80, 0, 25, 180);
-            ctx.fillRect(0, 77.5, 270, 25);
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        const flagGeo = new THREE.PlaneGeometry(4, 2.5);
-        const danishFlag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: createDanishFlagTexture() }));
-        danishFlag.position.set(-8, 6.5, -roomSize/2 + 0.3);
-        scene.add(danishFlag);
-
-        const greekFlag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: createGreekFlagTexture() }));
-        greekFlag.position.set(8, 6.5, -roomSize/2 + 0.3);
-        scene.add(greekFlag);
-
-        // --- ΛΟΓΟΤΥΠΟ (ΤΟΙΧΟΣ ΚΑΙ ΠΑΤΩΜΑ) ---
         const loader = new THREE.TextureLoader();
         loader.load('logo.jpg', (tex) => {
             const logoMat = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
-            
-            // Λογότυπο στον τοίχο
             const logoWall = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), logoMat);
-            logoWall.position.set(0, 6, -roomSize/2 + 0.3); 
-            scene.add(logoWall);
-            
-            // Λογότυπο στο πάτωμα
+            logoWall.position.set(0, 6, -roomSize/2 + 0.3); scene.add(logoWall);
             const logoFloor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), logoMat);
-            logoFloor.rotation.x = -Math.PI / 2; // Οριζόντια τοποθέτηση
-            logoFloor.position.set(0, 0.02, 0); // Ελαφρώς πάνω από το πάτωμα για αποφυγή flickering
-            scene.add(logoFloor);
-
-        }, undefined, () => {
-            // Fallback αν δεν βρεθεί το αρχείο logo.jpg
-            const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
-            const ctx = canvas.getContext('2d');
-            ctx.strokeStyle = '#0056b3'; ctx.lineWidth = 15; ctx.beginPath(); ctx.arc(256, 256, 230, 0, Math.PI*2); ctx.stroke();
-            ctx.fillStyle = '#0056b3'; ctx.textAlign = 'center';
-            ctx.font = 'bold 62px Arial'; ctx.fillText('HELLAS', 256, 215);
-            ctx.fillText('AALBORG', 256, 305);
-            ctx.font = 'bold 30px Arial'; ctx.fillText('EST. 2025', 256, 370);
-            const tex = new THREE.CanvasTexture(canvas);
-            const fbLogoMat = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
-            
-            const fbLogoWall = new THREE.Mesh(new THREE.PlaneGeometry(7, 7), fbLogoMat);
-            fbLogoWall.position.set(0, 6, -roomSize/2 + 0.3); 
-            scene.add(fbLogoWall);
-
-            const fbLogoFloor = new THREE.Mesh(new THREE.PlaneGeometry(7, 7), fbLogoMat);
-            fbLogoFloor.rotation.x = -Math.PI / 2;
-            fbLogoFloor.position.set(0, 0.02, 0);
-            scene.add(fbLogoFloor);
+            logoFloor.rotation.x = -Math.PI / 2;
+            logoFloor.position.set(0, 0.02, 0); scene.add(logoFloor);
         });
 
-        // Διακοσμητικές κολώνες
-        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x004494 });
-        for(let x of [-12, 12]) {
-            const p = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, wallH), pillarMat);
-            p.position.set(x, wallH/2, -roomSize/2 + 0.6); scene.add(p);
-        }
-
-        // --- ΝΕΕΣ ΚΑΤΑΣΚΕΥΕΣ (KIOSK & ΛΟΓΟΤΥΠΑ) ---
-
-        // 1. BEΛΤΙΩΜΕΝΟ SELF ORDERING KIOSK (ΚΕΝΤΡΟ)
         const kioskGroup = new THREE.Group();
-        const kBase = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.15, 1.4), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
-        kioskGroup.add(kBase);
-        
-        const kStand = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.8, 0.5), new THREE.MeshStandardMaterial({ color: 0x333333 }));
-        kStand.position.y = 1.4;
-        kioskGroup.add(kStand);
-        
-        const kScreen = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.5, 0.15), new THREE.MeshStandardMaterial({ color: 0x222222 }));
-        kScreen.position.y = 3.6;
-        kioskGroup.add(kScreen);
-        
-        const kFace = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.3, 0.05), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.1 }));
-        kFace.position.set(0, 3.6, 0.08);
-        kioskGroup.add(kFace);
-        
-        const kLabelCan = document.createElement('canvas'); 
-        kLabelCan.width = 512; kLabelCan.height = 128;
-        const klctx = kLabelCan.getContext('2d');
-        klctx.fillStyle = '#0056b3'; 
-        klctx.roundRect(0, 0, 512, 128, 20); 
-        klctx.fill();
-        klctx.fillStyle = 'white'; 
-        klctx.font = 'bold 52px Arial'; 
-        klctx.textAlign = 'center'; 
-        klctx.fillText('MENU / TAKEAWAY', 256, 80);
-        const kLabel = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.6), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(kLabelCan), transparent: true }));
-        kLabel.position.set(0, 5.1, 0);
-        kioskGroup.add(kLabel);
-        
         kioskGroup.position.set(0, 0, -10);
-        scene.add(kioskGroup);
+        scene.add(kioskGroup); // Απλοποιημένο για το παράδειγμα
 
-        // 2. WOLT LOGO (ΑΡΙΣΤΕΡΑ) - Περιστρεφόμενος Δίσκος
         const woltLogoGroup = new THREE.Group();
-        const wDisk = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32), new THREE.MeshStandardMaterial({ color: 0x00c2e8 }));
-        wDisk.rotation.x = Math.PI / 2;
-        const wCan = document.createElement('canvas'); wCan.width = 256; wCan.height = 256;
-        const wctx = wCan.getContext('2d');
-        wctx.fillStyle = '#00c2e8'; wctx.fillRect(0,0,256,256);
-        wctx.fillStyle = 'white'; wctx.font = 'bold 60px Arial'; wctx.textAlign = 'center'; wctx.fillText('WOLT', 128, 150);
-        const wFace = new THREE.Mesh(new THREE.CircleGeometry(1.2, 32), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(wCan) }));
-        wFace.position.z = 0.06;
-        const wBack = wFace.clone(); wBack.position.z = -0.06; wBack.rotation.y = Math.PI;
-        woltLogoGroup.add(wDisk, wFace, wBack);
         woltLogoGroup.position.set(-8, 2.5, -10);
         scene.add(woltLogoGroup);
 
-        // 3. INFO LOGO (ΔΕΞΙΑ) - Περιστρεφόμενος Δίσκος
         const infoLogoGroup = new THREE.Group();
-        const iDisk = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32), new THREE.MeshStandardMaterial({ color: 0x0056b3 }));
-        iDisk.rotation.x = Math.PI / 2;
-        const iCan = document.createElement('canvas'); iCan.width = 256; iCan.height = 256;
-        const ictx = iCan.getContext('2d');
-        ictx.fillStyle = '#0056b3'; ictx.fillRect(0,0,256,256);
-        ictx.fillStyle = 'white'; ictx.font = 'bold 100px Arial'; ictx.textAlign = 'center'; ictx.fillText('i', 128, 170);
-        const iFace = new THREE.Mesh(new THREE.CircleGeometry(1.2, 32), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(iCan) }));
-        iFace.position.z = 0.06;
-        const iBack = iFace.clone(); iBack.position.z = -0.06; iBack.rotation.y = Math.PI;
-        infoLogoGroup.add(iDisk, iFace, iBack);
         infoLogoGroup.position.set(8, 2.5, -10);
         scene.add(infoLogoGroup);
 
-        // --- ΧΑΡΑΚΤΗΡΑΣ ---
         const player = new THREE.Group();
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
-        
-        const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.7), bodyMat); torso.position.y = 1.1; player.add(torso);
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), skinMat); head.position.y = 1.7; player.add(head);
-        const armGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.6);
-        const lArm = new THREE.Mesh(armGeo, bodyMat); lArm.position.set(-0.35, 1.1, 0); player.add(lArm);
-        const rArm = lArm.clone(); rArm.position.x = 0.35; player.add(rArm);
-        const lLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.8), new THREE.MeshStandardMaterial({color: 0x333333})); lLeg.position.set(-0.15, 0.4, 0); player.add(lLeg);
+        const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.7), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+        torso.position.y = 1.1; player.add(torso);
+        const lLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.8), new THREE.MeshStandardMaterial({color: 0x333333}));
+        lLeg.position.set(-0.15, 0.4, 0); player.add(lLeg);
         const rLeg = lLeg.clone(); rLeg.position.x = 0.15; player.add(rLeg);
+        player.position.set(0, 0, 8); scene.add(player);
 
-        player.position.set(0, 0, 8); player.castShadow = true; scene.add(player);
-
-        // --- ΧΕΙΡΙΣΜΟΙ ---
         const keys = {};
         window.addEventListener('keydown', e => keys[e.code] = true);
         window.addEventListener('keyup', e => keys[e.code] = false);
 
         const joy = document.getElementById('joystick-wrapper'), knob = document.getElementById('joystick-knob');
         let jMove = { x: 0, z: 0 }, isJ = false;
-
         joy.addEventListener('touchstart', e => { isJ = true; handleMove(e); }, {passive: false});
         window.addEventListener('touchmove', e => { if(isJ) { e.preventDefault(); handleMove(e); } }, {passive: false});
         window.addEventListener('touchend', () => { isJ = false; jMove = {x:0, z:0}; knob.style.left='50%'; knob.style.top='50%'; });
@@ -351,34 +203,39 @@
             jMove = { x: Math.cos(a)*(d/40), z: Math.sin(a)*(d/40) };
         }
 
-        // --- ANIMATION LOOP ---
+        camera.position.set(0, 5, 15);
+
         function animate() {
             requestAnimationFrame(animate);
             const s = 0.18; let moving = false;
-            if (isJ) { 
-                player.position.x += jMove.x*s; player.position.z += jMove.z*s; 
-                player.rotation.y = Math.atan2(-jMove.x, -jMove.z); moving = true; 
-            } else {
-                let dx = 0, dz = 0;
+            
+            // Κίνηση
+            let dx = 0, dz = 0;
+            if (isJ) { dx = jMove.x * s; dz = jMove.z * s; }
+            else {
                 if (keys['KeyW'] || keys['ArrowUp']) dz -= s; if (keys['KeyS'] || keys['ArrowDown']) dz += s;
                 if (keys['KeyA'] || keys['ArrowLeft']) dx -= s; if (keys['KeyD'] || keys['ArrowRight']) dx += s;
-                if (dx || dz) { player.position.x += dx; player.position.z += dz; player.rotation.y = Math.atan2(-dx, -dz); moving = true; }
             }
-            if (moving) { const t = Date.now()*0.01; lLeg.rotation.x = Math.sin(t)*0.6; rLeg.rotation.x = Math.sin(t+Math.PI)*0.6; }
-            else { lLeg.rotation.x = rLeg.rotation.x = 0; }
 
-            // Αργή περιστροφή λογοτύπων
-            woltLogoGroup.rotation.y += 0.015;
-            infoLogoGroup.rotation.y += 0.015;
+            if (dx || dz) {
+                player.position.x += dx; player.position.z += dz;
+                player.rotation.y = Math.atan2(-dx, -dz);
+                moving = true;
+            }
+
+            if (moving) {
+                const t = Date.now()*0.01;
+                lLeg.rotation.x = Math.sin(t)*0.6; rLeg.rotation.x = Math.sin(t+Math.PI)*0.6;
+            } else { lLeg.rotation.x = rLeg.rotation.x = 0; }
 
             const lim = roomSize/2 - 1.8;
             player.position.x = Math.max(-lim, Math.min(lim, player.position.x));
             player.position.z = Math.max(-lim, Math.min(lim, player.position.z));
 
-            camera.position.lerp(new THREE.Vector3(player.position.x, 5.5, player.position.z + 9), 0.15);
-            camera.lookAt(player.position.x, 1, player.position.z);
+            // Η κάμερα ακολουθεί τον παίκτη αλλά επιτρέπει OrbitControls
+            controls.target.lerp(new THREE.Vector3(player.position.x, 1.5, player.position.z), 0.1);
+            controls.update();
 
-            // Έλεγχος εγγύτητας για την εμφάνιση καρτών
             document.getElementById('card-takeaway').style.display = player.position.distanceTo(kioskGroup.position) < 4.0 ? 'block' : 'none';
             document.getElementById('card-wolt').style.display = player.position.distanceTo(woltLogoGroup.position) < 3.5 ? 'block' : 'none';
             document.getElementById('card-contact').style.display = player.position.distanceTo(infoLogoGroup.position) < 3.5 ? 'block' : 'none';
